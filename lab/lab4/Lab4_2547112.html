@@ -7803,61 +7803,6 @@ a.anchor-link {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h1 id="Lab-4:-Regression-and-Classification-Evaluation-Metrics">Lab 4: Regression and Classification Evaluation Metrics<a class="anchor-link" href="#Lab-4:-Regression-and-Classification-Evaluation-Metrics">¶</a></h1><h2 id="Aim">Aim<a class="anchor-link" href="#Aim">¶</a></h2><p>To implement the <strong>K-Nearest Neighbours (KNN)</strong> classification algorithm on the <strong>Breast Cancer Wisconsin Diagnostic Dataset</strong>, analyze its performance using different validation techniques, and evaluate the model using classification metrics. The lab also compares these metrics with the regression evaluation metrics studied in <strong>Linear Regression (Lab 3).</strong></p>
-<hr/>
-<h2 id="Objectives">Objectives<a class="anchor-link" href="#Objectives">¶</a></h2><p>After completing this lab, you should be able to:</p>
-<ul>
-<li>Understand how the KNN classification algorithm works.</li>
-<li>Prepare datasets for machine learning.</li>
-<li>Apply feature scaling using <code>StandardScaler</code>.</li>
-<li>Perform different train-test splits (80:20, 70:30, 90:10).</li>
-<li>Select an appropriate value of <strong>K</strong> using heuristic methods ($K = \sqrt{n}$).</li>
-<li>Evaluate model performance using Cross Validation (5-Fold and 10-Fold).</li>
-<li>Interpret classification evaluation metrics (Accuracy, Precision, Recall, F1 Score).</li>
-<li>Understand ROC Curve and ROC-AUC.</li>
-<li>Compare regression evaluation metrics with classification metrics.</li>
-<li>Analyze the advantages and limitations of KNN.</li>
-</ul>
-<hr/>
-<h2 id="Dataset-Information">Dataset Information<a class="anchor-link" href="#Dataset-Information">¶</a></h2><p><strong>Dataset:</strong> Breast Cancer Wisconsin (Diagnostic)</p>
-<ul>
-<li><strong>Total Samples:</strong> 569</li>
-<li><strong>Features:</strong> 30 Numerical Features</li>
-<li><strong>Target Variable:</strong><ul>
-<li><code>0</code> → Malignant</li>
-<li><code>1</code> → Benign</li>
-</ul>
-</li>
-</ul>
-<hr/>
-<h2 id="Machine-Learning-Workflow">Machine Learning Workflow<a class="anchor-link" href="#Machine-Learning-Workflow">¶</a></h2><pre><code>Load Dataset
-      │
-      ▼
-Explore Dataset
-      │
-      ▼
-Check Missing Values
-      │
-      ▼
-Feature Scaling
-      │
-      ▼
-Train-Test Split
-      │
-      ▼
-Select K Value
-      │
-      ▼
-Train KNN Model
-      │
-      ▼
-Cross Validation
-      │
-      ▼
-Model Evaluation
-      │
-      ▼
-Compare with Regression Metrics
-</code></pre>
 </div>
 </div>
 </div>
@@ -7868,19 +7813,17 @@ Compare with Regression Metrics
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Task-1-%E2%80%94-Data-Preparation">Task 1 — Data Preparation<a class="anchor-link" href="#Task-1-%E2%80%94-Data-Preparation">¶</a></h1><h2 id="Why-Feature-Scaling?">Why Feature Scaling?<a class="anchor-link" href="#Why-Feature-Scaling?">¶</a></h2><p>KNN calculations are based on distance metrics (such as Euclidean or Manhattan distance) between data points. Features with larger numerical ranges will dominate these distance calculations, rendering features with smaller ranges ineffective.</p>
-<p>To address this, we apply feature scaling using <code>StandardScaler</code>. This transforms the distribution of each feature to have:</p>
+<h1 id="Task-1-%E2%80%94-Data-Preparation">Task 1 — Data Preparation<a class="anchor-link" href="#Task-1-%E2%80%94-Data-Preparation">¶</a></h1><h2 id="Why-Feature-Scaling?">Why Feature Scaling?<a class="anchor-link" href="#Why-Feature-Scaling?">¶</a></h2><p>KNN calculations are based on distance metrics between data points. Features with larger numerical ranges will dominate these distance calculations, rendering features with smaller ranges ineffective.</p>
+<p>We apply feature scaling using <code>StandardScaler</code>. This transforms the distribution of each feature to have:</p>
 <ul>
 <li><strong>Mean = 0</strong></li>
 <li><strong>Standard Deviation = 1</strong></li>
 </ul>
 <p>This ensures that every feature contributes equally to the distance calculation.</p>
-<h3 id="Mapping-Target-Variable">Mapping Target Variable<a class="anchor-link" href="#Mapping-Target-Variable">¶</a></h3><p>The target column in the raw dataset contains string values:</p>
-<ul>
-<li><code>"M"</code> for Malignant (predicted class <code>0</code> in our setup)</li>
-<li><code>"B"</code> for Benign (predicted class <code>1</code> in our setup)</li>
+<h3 id="Mapping-Target-Variable">Mapping Target Variable<a class="anchor-link" href="#Mapping-Target-Variable">¶</a></h3><ul>
+<li><code>"M"</code> (predicted class <code>0</code> in our setup)</li>
+<li><code>"B"</code> (predicted class <code>1</code> in our setup)</li>
 </ul>
-<p>We will map these to numerical values to make them compatible with machine learning libraries like scikit-learn.</p>
 </div>
 </div>
 </div>
@@ -7889,7 +7832,7 @@ Compare with Regression Metrics
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -7910,7 +7853,7 @@ Compare with Regression Metrics
 
 <span class="c1"># Load dataset</span>
 <span class="c1"># The dataset has an index in the first column, which we read using index_col=0</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'../data/breast_cancer.csv'</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'data/breast_cancer.csv'</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">"--- Dataset Shape &amp; Information ---"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Shape: </span><span class="si">{</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> rows, </span><span class="si">{</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> columns"</span><span class="p">)</span>
@@ -8197,15 +8140,12 @@ Name: count, dtype: int64
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h1 id="Task-2-%E2%80%94-Train-Test-Split-Analysis">Task 2 — Train-Test Split Analysis<a class="anchor-link" href="#Task-2-%E2%80%94-Train-Test-Split-Analysis">¶</a></h1><p>We perform three different train-test splits to evaluate how training set size affects the model:</p>
 <ul>
-<li><strong>80:20 Split</strong></li>
-<li><strong>70:30 Split</strong></li>
-<li><strong>90:10 Split</strong></li>
+<li><strong>80:20, 70:30, 90:10 Split</strong></li>
 </ul>
-<h3 id="Critical-Concept:-Avoiding-Data-Leakage-in-Feature-Scaling">Critical Concept: Avoiding Data Leakage in Feature Scaling<a class="anchor-link" href="#Critical-Concept:-Avoiding-Data-Leakage-in-Feature-Scaling">¶</a></h3><p>To evaluate the model's true generalization capacity, we must split the data <strong>before</strong> feature scaling.</p>
+<h3 id="Feature-Scaling">Feature Scaling<a class="anchor-link" href="#Feature-Scaling">¶</a></h3><p>Split <strong>before</strong> scaling to avoid <strong>data leakage</strong>.</p>
 <ul>
-<li>The <code>StandardScaler</code> must fit its parameters ($\mu$ and $\sigma$) <strong>only</strong> on the training features.</li>
-<li>We then transform both the training features and the testing features using these fitted parameters.
-If we scale the entire dataset before splitting, information from the test set (its mean and variance) leaks into the training set, causing <strong>data leakage</strong> and leading to overly optimistic test performance estimates.</li>
+<li>Fit <code>StandardScaler</code> only on <code>X_train</code></li>
+<li>Transform both <code>X_train</code> and <code>X_test</code> with the same scaler</li>
 </ul>
 </div>
 </div>
@@ -8215,7 +8155,7 @@ If we scale the entire dataset before splitting, information from the test set (
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Separate features and target</span>
@@ -8369,19 +8309,23 @@ If we scale the entire dataset before splitting, information from the test set (
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Analysis:-How-Train-Test-Split-Affects-Performance-&amp;-Stability">Analysis: How Train-Test Split Affects Performance &amp; Stability<a class="anchor-link" href="#Analysis:-How-Train-Test-Split-Affects-Performance-&amp;-Stability">¶</a></h3><ol>
-<li><strong>90:10 Split:</strong><ul>
-<li><strong>Generalization:</strong> With 90% training data, the model sees a larger variety of examples, allowing it to potentially capture the feature space more accurately.</li>
-<li><strong>Stability:</strong> However, the test size is very small (10% or 57 samples). This makes the evaluation metric highly sensitive to individual test samples. An error on a single test point changes the accuracy by nearly 1.8%, leading to high variance in the reported metrics.</li>
+<h3 id="Analysis:-Effect-of-Train-Test-Split-on-Performance">Analysis: Effect of Train-Test Split on Performance<a class="anchor-link" href="#Analysis:-Effect-of-Train-Test-Split-on-Performance">¶</a></h3><ol>
+<li><p><strong>90:10 Split</strong></p>
+<ul>
+<li>More training data, so the model learns better.</li>
+<li>Very small test set, so results may vary more.</li>
 </ul>
 </li>
-<li><strong>70:30 Split:</strong><ul>
-<li><strong>Generalization:</strong> The model is trained on fewer samples (398 samples). It might not represent all clinical patterns as comprehensively, potentially limiting its training capacity.</li>
-<li><strong>Stability:</strong> The test set size is larger (171 samples), which yields a highly reliable, low-variance evaluation of the trained model.</li>
+<li><p><strong>70:30 Split</strong></p>
+<ul>
+<li>Less training data, so performance may drop slightly.</li>
+<li>Larger test set gives more stable evaluation.</li>
 </ul>
 </li>
-<li><strong>80:20 Split:</strong><ul>
-<li>This split provides a balanced trade-off, offering sufficient training data (455 samples) for high generalization while maintaining a large enough test set (114 samples) for reliable evaluation.</li>
+<li><p><strong>80:20 Split</strong></p>
+<ul>
+<li>Best balance between training size and test size.</li>
+<li>Suitable for both learning and evaluation.</li>
 </ul>
 </li>
 </ol>
@@ -8395,10 +8339,16 @@ If we scale the entire dataset before splitting, information from the test set (
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Task-3-%E2%80%94-KNN-Model-Optimization">Task 3 — KNN Model Optimization<a class="anchor-link" href="#Task-3-%E2%80%94-KNN-Model-Optimization">¶</a></h1><h2 id="Step-1:-Heuristic-K-Selection">Step 1: Heuristic K Selection<a class="anchor-link" href="#Step-1:-Heuristic-K-Selection">¶</a></h2><p>We use the rule of thumb $K = \sqrt{n}$ where $n$ is the number of training samples. For our standard 80:20 split:
-$$n = 455 \implies K = \sqrt{455} \approx 21.33 \implies K \approx 21$$
-To avoid voting ties, we adjust $K$ to the nearest odd integer.</p>
-<h2 id="Step-2:-Experiment-with-Different-K-Values">Step 2: Experiment with Different K Values<a class="anchor-link" href="#Step-2:-Experiment-with-Different-K-Values">¶</a></h2><p>Instead of relying solely on the heuristic, we evaluate a range of $K$ values around the heuristic ($K-5$ to $K+5$, which is $16$ to $26$), and broaden it to $K \in [1, 35]$ to visualize the overall trend.</p>
+<h1 id="Task-3-%E2%80%94-KNN-Model-Optimization">Task 3 — KNN Model Optimization<a class="anchor-link" href="#Task-3-%E2%80%94-KNN-Model-Optimization">¶</a></h1><h2 id="Step-1:-Heuristic-K-Selection">Step 1: Heuristic K Selection<a class="anchor-link" href="#Step-1:-Heuristic-K-Selection">¶</a></h2><p>Use the rule of thumb:</p>
+<ul>
+<li>Using square root of <code>n</code></li>
+</ul>
+<p>For the 80:20 split:</p>
+<ul>
+<li>n = 445 | k = square_root(445) | = 21</li>
+</ul>
+<p>We use the nearest odd integer to avoid ties.</p>
+<h2 id="Step-2:-Test-Different-K-Values">Step 2: Test Different K Values<a class="anchor-link" href="#Step-2:-Test-Different-K-Values">¶</a></h2><p>To find a better value, we evaluate a range of K values from 1 to 35 and compare the test accuracy to the heuristic choice.</p>
 </div>
 </div>
 </div>
@@ -8407,7 +8357,7 @@ To avoid voting ties, we adjust $K$ to the nearest odd integer.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Standardize 80:20 split for optimization</span>
@@ -8486,23 +8436,13 @@ Optimal K from Parameter Search: 3 (Test Accuracy: 98.25%)
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Distance-Metrics-in-KNN">Distance Metrics in KNN<a class="anchor-link" href="#Distance-Metrics-in-KNN">¶</a></h2><p>The selection of the distance metric is critical to define the "closeness" of neighbors.</p>
-<ol>
-<li><p><strong>Euclidean Distance (L2 Norm):</strong>
-$$d(\mathbf{x}, \mathbf{y}) = \sqrt{\sum_{i=1}^D (x_i - y_i)^2}$$</p>
+<h2 id="Distance-Metrics-in-KNN">Distance Metrics in KNN<a class="anchor-link" href="#Distance-Metrics-in-KNN">¶</a></h2><p>Distance metrics tell KNN how close two data points are.</p>
 <ul>
-<li>Suitable for continuous features and represents the straight-line geometric distance.</li>
-<li>Requires feature scaling as it is highly sensitive to features with large variances.</li>
-</ul>
+<li><p><strong>Euclidean Distance (L2):</strong> Measures the straight-line distance between two points. Best for numerical data.</p>
 </li>
-<li><p><strong>Manhattan Distance (L1 Norm):</strong>
-$$d(\mathbf{x}, \mathbf{y}) = \sum_{i=1}^D |x_i - y_i|$$</p>
-<ul>
-<li>Measures grid-like distance (distance along axes).</li>
-<li>More robust to outliers and preferred in high-dimensional sparse datasets.</li>
-</ul>
+<li><p><strong>Manhattan Distance (L1):</strong> Measures distance by moving along rows and columns. It is less affected by outliers.</p>
 </li>
-</ol>
+</ul>
 </div>
 </div>
 </div>
@@ -8511,7 +8451,7 @@ $$d(\mathbf{x}, \mathbf{y}) = \sum_{i=1}^D |x_i - y_i|$$</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Compare distance metrics with the optimal K value</span>
@@ -8608,11 +8548,11 @@ $$d(\mathbf{x}, \mathbf{y}) = \sum_{i=1}^D |x_i - y_i|$$</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Decision-Boundary-Visualization">Decision Boundary Visualization<a class="anchor-link" href="#Decision-Boundary-Visualization">¶</a></h2><p>Since our dataset has 30 features, visualizing decision boundaries directly is impossible. To overcome this, we project the scaled training features into a 2D space using <strong>Principal Component Analysis (PCA)</strong>.</p>
-<p>We then fit KNN classifiers on the 2D projected space for $K \in \{1, 5, 10, 20\}$ and plot the resulting decision boundaries to observe:</p>
+<h2 id="Decision-Boundary-Visualization">Decision Boundary Visualization<a class="anchor-link" href="#Decision-Boundary-Visualization">¶</a></h2><p>Our dataset has 30 features, so we cannot directly draw the decision boundary. To make it easier to visualize, we use <strong>PCA</strong> to reduce the data to <strong>2 dimensions</strong>.</p>
+<p>We then train KNN models with different values of <strong>K (1, 5, 10, and 20)</strong> and compare their decision boundaries.</p>
 <ul>
-<li><strong>Small $K$ (e.g. $K=1$):</strong> High variance, complex, noisy boundaries that closely wrap training points (Overfitting).</li>
-<li><strong>Large $K$ (e.g. $K=20$):</strong> High bias, extremely smooth and simple boundaries (Underfitting).</li>
+<li><strong>Small K (e.g., 1):</strong> Creates complex boundaries and may overfit the training data.</li>
+<li><strong>Large K (e.g., 20):</strong> Creates smoother boundaries but may underfit the data.</li>
 </ul>
 </div>
 </div>
@@ -8622,7 +8562,7 @@ $$d(\mathbf{x}, \mathbf{y}) = \sum_{i=1}^D |x_i - y_i|$$</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
@@ -8711,8 +8651,8 @@ $$d(\mathbf{x}, \mathbf{y}) = \sum_{i=1}^D |x_i - y_i|$$</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Task-4-%E2%80%94-Cross-Validation">Task 4 — Cross Validation<a class="anchor-link" href="#Task-4-%E2%80%94-Cross-Validation">¶</a></h1><p>To ensure our evaluation is not biased by a single split, we perform <strong>5-Fold</strong> and <strong>10-Fold Cross Validation</strong>.</p>
-<h3 id="Preventing-Data-Leakage-in-Cross-Validation">Preventing Data Leakage in Cross Validation<a class="anchor-link" href="#Preventing-Data-Leakage-in-Cross-Validation">¶</a></h3><p>When validating, the scaling step must occur inside each fold independently. Fitting a scaler on the entire dataset and then cross-validating results in data leakage. To avoid this, we use scikit-learn's <code>Pipeline</code> which automatically scales the training subset of each fold and applies the transformation to the validation fold.</p>
+<h1 id="Task-4-%E2%80%94-Cross-Validation">Task 4 — Cross Validation<a class="anchor-link" href="#Task-4-%E2%80%94-Cross-Validation">¶</a></h1><p>Cross Validation helps us test the model on different parts of the dataset instead of using only one train-test split. We use <strong>5-Fold</strong> and <strong>10-Fold Cross Validation</strong> to get a more reliable evaluation.</p>
+<h3 id="Preventing-Data-Leakage">Preventing Data Leakage<a class="anchor-link" href="#Preventing-Data-Leakage">¶</a></h3><p>To avoid data leakage, we scale the data separately within each fold. This ensures the model only learns from the training data in each fold. We use scikit-learn's <strong>Pipeline</strong> to do this automatically.</p>
 </div>
 </div>
 </div>
@@ -8721,7 +8661,7 @@ $$d(\mathbf{x}, \mathbf{y}) = \sum_{i=1}^D |x_i - y_i|$$</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
@@ -8768,14 +8708,14 @@ Simple 80:20 Split Test Accuracy (Optimal K = 3): 98.25%
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Task-5-%E2%80%94-Model-Evaluation">Task 5 — Model Evaluation<a class="anchor-link" href="#Task-5-%E2%80%94-Model-Evaluation">¶</a></h1><p>We evaluate our final model (using the optimal $K$ found from parameter search on the 80:20 split) using multiple classification evaluation metrics:</p>
+<h1 id="Task-5-%E2%80%94-Model-Evaluation">Task 5 — Model Evaluation<a class="anchor-link" href="#Task-5-%E2%80%94-Model-Evaluation">¶</a></h1><p>We evaluate the final KNN model using different performance metrics:</p>
 <ul>
-<li><strong>Accuracy:</strong> General correctness.</li>
-<li><strong>Precision:</strong> $\frac{TP}{TP + FP}$ - Proportion of predicted positives that are actually positive (critical when false positives are costly).</li>
-<li><strong>Recall (Sensitivity):</strong> $\frac{TP}{TP + FN}$ - Proportion of actual positives correctly identified (extremely critical in cancer diagnosis to avoid missing malignant cases).</li>
-<li><strong>F1 Score:</strong> Harmonic mean of Precision and Recall.</li>
-<li><strong>Confusion Matrix:</strong> Map of TP, TN, FP, FN.</li>
-<li><strong>ROC Curve &amp; ROC-AUC:</strong> Graphical representation of TPR vs FPR across all thresholds.</li>
+<li><strong>Accuracy:</strong> Overall percentage of correct predictions.</li>
+<li><strong>Precision:</strong> How many predicted positive cases are actually positive.</li>
+<li><strong>Recall:</strong> How many actual positive cases are correctly identified.</li>
+<li><strong>F1 Score:</strong> A balance between Precision and Recall.</li>
+<li><strong>Confusion Matrix:</strong> Shows correct and incorrect predictions.</li>
+<li><strong>ROC Curve &amp; ROC-AUC:</strong> Measures how well the model separates the two classes.</li>
 </ul>
 </div>
 </div>
@@ -8785,7 +8725,7 @@ Simple 80:20 Split Test Accuracy (Optimal K = 3): 98.25%
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Fit the final model with optimal K</span>
@@ -8877,50 +8817,44 @@ Malignant (0)       1.00      0.95      0.98        42
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Task-6-%E2%80%94-Regression-vs-Classification">Task 6 — Regression vs Classification<a class="anchor-link" href="#Task-6-%E2%80%94-Regression-vs-Classification">¶</a></h1><p>Evaluating model performance requires choosing the correct metric category.</p>
-<table>
+<h1 id="Task-6-%E2%80%94-Regression-vs-Classification">Task 6 — Regression vs Classification<a class="anchor-link" href="#Task-6-%E2%80%94-Regression-vs-Classification">¶</a></h1><table>
 <thead>
 <tr>
 <th style="text-align:left">Property</th>
-<th style="text-align:left">Regression (studied in Lab 3)</th>
-<th style="text-align:left">Classification (studied in Lab 4)</th>
+<th style="text-align:left">Regression</th>
+<th style="text-align:left">Classification</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left"><strong>Output Type</strong></td>
-<td style="text-align:left">Continuous numerical values</td>
-<td style="text-align:left">Discrete categorical classes</td>
+<td style="text-align:left"><strong>Output</strong></td>
+<td style="text-align:left">Numerical values</td>
+<td style="text-align:left">Categories or classes</td>
 </tr>
 <tr>
-<td style="text-align:left"><strong>Objective</strong></td>
-<td style="text-align:left">Minimize prediction error</td>
-<td style="text-align:left">Maximize classification correctness</td>
+<td style="text-align:left"><strong>Goal</strong></td>
+<td style="text-align:left">Predict a value</td>
+<td style="text-align:left">Predict the correct class</td>
 </tr>
 <tr>
-<td style="text-align:left"><strong>Key Metrics</strong></td>
-<td style="text-align:left">MAE, MSE, RMSE, $R^2$ Score</td>
+<td style="text-align:left"><strong>Common Metrics</strong></td>
+<td style="text-align:left">MAE, MSE, RMSE, R²</td>
 <td style="text-align:left">Accuracy, Precision, Recall, F1 Score, ROC-AUC</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>Fit Metric</strong></td>
-<td style="text-align:left">$R^2$ measures explained variance</td>
-<td style="text-align:left">ROC-AUC measures class separation threshold-independently</td>
 </tr>
 </tbody>
 </table>
 <hr/>
-<h2 id="Detailed-Comparisons">Detailed Comparisons<a class="anchor-link" href="#Detailed-Comparisons">¶</a></h2><h3 id="1.-$R%5E2$-Score-vs.-Accuracy">1. $R^2$ Score vs. Accuracy<a class="anchor-link" href="#1.-$R%5E2$-Score-vs.-Accuracy">¶</a></h3><ul>
-<li><strong>$R^2$ Score (Coefficient of Determination):</strong> Measures the proportion of variance in the dependent variable explained by features, relative to a baseline mean predictor. Ranges from $-\infty$ to $1.0$.</li>
-<li><strong>Accuracy:</strong> Measures the raw percentage of correctly classified cases out of total predictions. Ranges from $0.0$ to $1.0$ (or 100%).</li>
+<h2 id="Comparison">Comparison<a class="anchor-link" href="#Comparison">¶</a></h2><h3 id="1.-R%C2%B2-Score-vs-Accuracy">1. R² Score vs Accuracy<a class="anchor-link" href="#1.-R%C2%B2-Score-vs-Accuracy">¶</a></h3><ul>
+<li><strong>R² Score:</strong> Measures how well the model predicts numerical values.</li>
+<li><strong>Accuracy:</strong> Measures the percentage of correct class predictions.</li>
 </ul>
-<h3 id="2.-RMSE-vs.-F1-Score">2. RMSE vs. F1 Score<a class="anchor-link" href="#2.-RMSE-vs.-F1-Score">¶</a></h3><ul>
-<li><strong>RMSE (Root Mean Squared Error):</strong> Measures the average prediction error, penalizing larger deviations quadratically. Expressed in the target's original units.</li>
-<li><strong>F1 Score:</strong> The harmonic mean of Precision and Recall, balancing false positive rates and false negative rates. Crucial for imbalanced categorical data.</li>
+<h3 id="2.-RMSE-vs-F1-Score">2. RMSE vs F1 Score<a class="anchor-link" href="#2.-RMSE-vs-F1-Score">¶</a></h3><ul>
+<li><strong>RMSE:</strong> Measures the average prediction error in regression.</li>
+<li><strong>F1 Score:</strong> Balances Precision and Recall for classification.</li>
 </ul>
-<h3 id="3.-MAE-vs.-Confusion-Matrix">3. MAE vs. Confusion Matrix<a class="anchor-link" href="#3.-MAE-vs.-Confusion-Matrix">¶</a></h3><ul>
-<li><strong>MAE (Mean Absolute Error):</strong> Computes the average magnitude of absolute prediction errors, treating all deviations linearly.</li>
-<li><strong>Confusion Matrix:</strong> A full contingency table breaking down correct and incorrect predictions across all classes, mapping specific errors (False Positives vs. False Negatives).</li>
+<h3 id="3.-MAE-vs-Confusion-Matrix">3. MAE vs Confusion Matrix<a class="anchor-link" href="#3.-MAE-vs-Confusion-Matrix">¶</a></h3><ul>
+<li><strong>MAE:</strong> Measures the average absolute error in regression.</li>
+<li><strong>Confusion Matrix:</strong> Shows the number of correct and incorrect predictions for each class.</li>
 </ul>
 </div>
 </div>
@@ -8932,33 +8866,17 @@ Malignant (0)       1.00      0.95      0.98        42
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Analytical-Questions">Analytical Questions<a class="anchor-link" href="#Analytical-Questions">¶</a></h1><h3 id="1.-Why-is-KNN-called-a-lazy-learning-algorithm?">1. Why is KNN called a lazy learning algorithm?<a class="anchor-link" href="#1.-Why-is-KNN-called-a-lazy-learning-algorithm?">¶</a></h3><p>KNN is called a <strong>lazy learner</strong> because it does not have a formal training phase where it fits mathematical weights or generates a structural model (like Coefficients in Linear Regression or Nodes in a Decision Tree). Instead, it simply stores (memorizes) the training instances in memory. All computations—calculating distance to other points and performing majority voting—are deferred until a prediction is requested.</p>
-<ul>
-<li><strong>Training Time complexity:</strong> $O(1)$</li>
-<li><strong>Inference Time complexity:</strong> $O(N \cdot D)$ (where $N$ is the number of samples, and $D$ is features), which makes predictions computationally expensive.</li>
+<h1 id="Analytical-Questions">Analytical Questions<a class="anchor-link" href="#Analytical-Questions">¶</a></h1><h3 id="1.-Why-is-KNN-called-a-lazy-learning-algorithm?">1. Why is KNN called a lazy learning algorithm?<a class="anchor-link" href="#1.-Why-is-KNN-called-a-lazy-learning-algorithm?">¶</a></h3><p>KNN is called a lazy learning algorithm because it does not learn a model during training. It simply stores the training data and makes predictions only when new data is given.</p>
+<h3 id="2.-Why-is-feature-scaling-necessary?">2. Why is feature scaling necessary?<a class="anchor-link" href="#2.-Why-is-feature-scaling-necessary?">¶</a></h3><p>Feature scaling ensures that all features have a similar range. This prevents features with larger values from having a bigger influence on distance calculations.</p>
+<h3 id="3.-How-is-the-value-of-K-selected?">3. How is the value of K selected?<a class="anchor-link" href="#3.-How-is-the-value-of-K-selected?">¶</a></h3><p>A common starting point is <strong>K = √n</strong> (where <em>n</em> is the number of training samples). The best value is then chosen by testing different K values and selecting the one with the highest accuracy.</p>
+<h3 id="4.-Why-is-cross-validation-more-reliable?">4. Why is cross validation more reliable?<a class="anchor-link" href="#4.-Why-is-cross-validation-more-reliable?">¶</a></h3><p>Cross validation tests the model on different parts of the dataset, giving a more reliable estimate of its performance than a single train-test split.</p>
+<h3 id="5.-Explain-the-bias-variance-trade-off-using-K.">5. Explain the bias-variance trade-off using K.<a class="anchor-link" href="#5.-Explain-the-bias-variance-trade-off-using-K.">¶</a></h3><ul>
+<li><strong>Small K:</strong> Can overfit the data by learning noise.</li>
+<li><strong>Large K:</strong> Can underfit the data by oversimplifying patterns.</li>
+<li><strong>Optimal K:</strong> Balances both to achieve good performance.</li>
 </ul>
-<h3 id="2.-Why-is-feature-scaling-necessary?">2. Why is feature scaling necessary?<a class="anchor-link" href="#2.-Why-is-feature-scaling-necessary?">¶</a></h3><p>KNN calculates similarity between instances using distance measures (like Euclidean distance). If a feature has a wide numeric scale (e.g., <code>area_mean</code> ranging from 100 to 2500) and another feature has a tiny numeric scale (e.g., <code>smoothness_mean</code> ranging from 0.05 to 0.15), the distance calculation will be dominated by the larger feature. Feature scaling via <code>StandardScaler</code> scales all features to a mean of 0 and a standard deviation of 1, allowing them to contribute equally to the final prediction.</p>
-<h3 id="3.-Explain-heuristic-K-selection.">3. Explain heuristic K selection.<a class="anchor-link" href="#3.-Explain-heuristic-K-selection.">¶</a></h3><p>The heuristic $K = \sqrt{n}$ (where $n$ is the number of training samples) provides a mathematically grounded baseline to balance the bias-variance trade-off.</p>
-<ul>
-<li>Setting $K$ too small makes the classifier highly sensitive to local noise (high variance).</li>
-<li>Setting $K$ too large makes the classifier ignore local boundaries, predicting based purely on majority classes (high bias).
-Taking the square root scale helps scale the neighborhood size dynamically with data size. In practice, we adjust the output to the nearest odd integer to prevent tie-votes.</li>
-</ul>
-<h3 id="4.-Why-is-cross-validation-more-reliable?">4. Why is cross validation more reliable?<a class="anchor-link" href="#4.-Why-is-cross-validation-more-reliable?">¶</a></h3><p>A single train-test split could create a test set containing anomalously easy or hard instances, leading to an inaccurate measure of generalization. Cross-validation (e.g., K-Fold) partitions the dataset into $k$ equal segments, training the model $k$ times while using a different segment as the validation set each time. Averaging these scores minimizes split-variance and utilizes every data point for both training and validation.</p>
-<h3 id="5.-Explain-bias-variance-trade-off-using-K.">5. Explain bias-variance trade-off using K.<a class="anchor-link" href="#5.-Explain-bias-variance-trade-off-using-K.">¶</a></h3><ul>
-<li><strong>Low $K$ (e.g., $K=1$):</strong> High variance, low bias. The decision boundary is highly complex, adapting to every individual data point (overfitting). It captures local noise.</li>
-<li><strong>High $K$ (e.g., $K=20$):</strong> High bias, low variance. The decision boundary becomes smooth and simple, ignoring local variations (underfitting).</li>
-<li><strong>Optimal $K$:</strong> The neighborhood size that minimizes the test error by balancing generalization and local resolution.</li>
-</ul>
-<h3 id="6.-Why-is-Recall-more-important-than-Accuracy-in-cancer-diagnosis?">6. Why is Recall more important than Accuracy in cancer diagnosis?<a class="anchor-link" href="#6.-Why-is-Recall-more-important-than-Accuracy-in-cancer-diagnosis?">¶</a></h3><p>In clinical cancer diagnosis:</p>
-<ul>
-<li><strong>False Positive (FP):</strong> Predicting a healthy patient has cancer. This leads to anxiety and secondary testing but is quickly corrected.</li>
-<li><strong>False Negative (FN):</strong> Predicting a cancer patient is healthy. This is dangerous and can lead to a lack of treatment, which is fatal.
-Recall measures the proportion of actual cancer patients detected:
-$$\text{Recall} = \frac{TP}{TP + FN}$$
-By maximizing Recall, we minimize False Negatives, ensuring no actual cancer patient is missed. Accuracy can be high even if the model misses a critical portion of malignant patients.</li>
-</ul>
-<h3 id="7.-What-happens-when-K-becomes-very-large?">7. What happens when K becomes very large?<a class="anchor-link" href="#7.-What-happens-when-K-becomes-very-large?">¶</a></h3><p>When $K$ grows to approach the total number of training samples $n$, the classifier considers almost all data points. In the extreme limit of $K = n$, the model ceases to recognize local patterns and always predicts the majority class of the dataset, regardless of features. This represents maximum bias and zero variance (underfitting).</p>
+<h3 id="6.-Why-is-Recall-more-important-than-Accuracy-in-cancer-diagnosis?">6. Why is Recall more important than Accuracy in cancer diagnosis?<a class="anchor-link" href="#6.-Why-is-Recall-more-important-than-Accuracy-in-cancer-diagnosis?">¶</a></h3><p>Recall measures how many actual cancer cases are correctly detected. Missing a cancer patient is much more serious than incorrectly predicting cancer for a healthy person.</p>
+<h3 id="7.-What-happens-when-K-becomes-very-large?">7. What happens when K becomes very large?<a class="anchor-link" href="#7.-What-happens-when-K-becomes-very-large?">¶</a></h3><p>When K is very large, the model considers too many neighbors and often predicts the majority class, leading to underfitting.</p>
 </div>
 </div>
 </div>
@@ -8969,12 +8887,12 @@ By maximizing Recall, we minimize False Negatives, ensuring no actual cancer pat
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion">¶</a></h1><p>This lab successfully demonstrates the K-Nearest Neighbours (KNN) classification algorithm on the Breast Cancer Wisconsin dataset. We prepared the data, mapped classes, and scaled features using <code>StandardScaler</code> to prevent feature dominance. Through experimenting with split ratios and parameter searches, we highlighted the trade-offs of split sizes and found the optimal $K$ values. Evaluating with cross-validation and classification metrics (Precision, Recall, F1 Score, Confusion Matrix, ROC-AUC) highlighted the clinical importance of high Recall in cancer detection. Comparing these to regression metrics from Lab 3 demonstrates the fundamental differences between predicting continuous and categorical variables.</p>
+<h1 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion">¶</a></h1><p>In this lab, we implemented the K-Nearest Neighbours (KNN) algorithm to classify breast cancer cases. We prepared the data, scaled the features, tested different values of <strong>K</strong>, and evaluated the model using cross-validation and classification metrics such as Accuracy, Precision, Recall, F1 Score, Confusion Matrix, and ROC-AUC. The results showed the importance of feature scaling and selecting the right value of <strong>K</strong> for better performance.</p>
 <hr/>
 <h1 id="References">References<a class="anchor-link" href="#References">¶</a></h1><ol>
-<li>UCI Machine Learning Repository – Breast Cancer Wisconsin Diagnostic Dataset.</li>
-<li>Scikit-Learn Documentation: <code>KNeighborsClassifier</code> and <code>StandardScaler</code>.</li>
-<li>ROC Curves &amp; AUC evaluation documentation.</li>
+<li>UCI Machine Learning Repository – Breast Cancer Wisconsin Dataset.</li>
+<li>Scikit-Learn Documentation.</li>
+<li>ROC Curve and AUC Documentation.</li>
 <li>Lab 3 – Linear Regression Evaluation Metrics.</li>
 </ol>
 </div>
